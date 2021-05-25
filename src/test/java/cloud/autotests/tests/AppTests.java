@@ -1,9 +1,12 @@
 package cloud.autotests.tests;
 
+import com.codeborne.selenide.Condition;
 import io.qameta.allure.Description;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static cloud.autotests.helpers.DriverHelper.getConsoleLogs;
+import static com.codeborne.selenide.Selectors.byCssSelector;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,16 +18,23 @@ public class AppTests extends TestBase {
     @DisplayName("Тестовый сайт")
     void generatedTest() {
         step("1. Открыть https://testsite.edusite.ru/", () -> {
-            // todo just add selenium action
+            open("https://testsite.edusite.ru/");
         });
 
         step("2. Перейти в Сведения об образовательной организации", () -> {
-            // todo just add selenium action
+//            $(byAttribute("page","6")).click();
+            open("https://testsite.edusite.ru/cs_common.html");
+            String actualTitle = title();
+            assertThat(actualTitle).isEqualTo("Сведения об образовательной организации");
+
         });
 
         step("3. Проверить что в Email - info@edusite.ru", () -> {
-            // todo just add selenium action
+            switchTo().frame(0);
+            $(byCssSelector("a[href=\"mailto:\"]"))
+                    .shouldHave(Condition.text("info@edusite.ru"));
         });
+
     }
 
     @Test
@@ -32,10 +42,10 @@ public class AppTests extends TestBase {
     @DisplayName("Page title should have header text")
     void titleTest() {
         step("Open url 'https://testsite.edusite.ru/'", () ->
-            open("https://testsite.edusite.ru/"));
+                open("https://testsite.edusite.ru/"));
 
-        step("Page title should have text '�������� ����'", () -> {
-            String expectedTitle = "�������� ����";
+        step("Page title should have text 'Тестовый сайт'", () -> {
+            String expectedTitle = "Тестовый сайт";
             String actualTitle = title();
 
             assertThat(actualTitle).isEqualTo(expectedTitle);
@@ -47,7 +57,7 @@ public class AppTests extends TestBase {
     @DisplayName("Page console log should not have errors")
     void consoleShouldNotHaveErrorsTest() {
         step("Open url 'https://testsite.edusite.ru/'", () ->
-            open("https://testsite.edusite.ru/"));
+                open("https://testsite.edusite.ru/"));
 
         step("Console logs should not contain text 'SEVERE'", () -> {
             String consoleLogs = getConsoleLogs();
